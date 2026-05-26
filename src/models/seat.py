@@ -1,7 +1,7 @@
 from enum import Enum
 
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import Integer, UniqueConstraint
+from sqlalchemy import Integer, UniqueConstraint, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -29,7 +29,7 @@ class Seat(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    hall_id: Mapped[int] = mapped_column(nullable=False)
+    hall_id: Mapped[int] = mapped_column(ForeignKey("halls.id"), nullable=False)
 
     # Ряд и место
     row_number: Mapped[int] = mapped_column(Integer, nullable=False)

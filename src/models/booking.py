@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
-from sqlalchemy import DateTime, Numeric, String, UniqueConstraint
+from sqlalchemy import DateTime, Numeric, String, UniqueConstraint, ForeignKey
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -29,10 +29,10 @@ class Booking(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Связи
-    user_id: Mapped[int] = mapped_column(nullable=False)
-    event_id: Mapped[int] = mapped_column(nullable=False)
-    seat_id: Mapped[int | None] = (
-        mapped_column()
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    event_id: Mapped[int] = mapped_column(ForeignKey("events.id"), nullable=False)
+    seat_id: Mapped[int | None] = mapped_column(
+        ForeignKey("seats.id"), nullable=True
     )  # NULL для концертов без фиксированных мест
 
     # Статус
@@ -74,4 +74,5 @@ class Booking(Base, TimestampMixin):
         """Истекло ли время резерва"""
         if self.status != BookingStatus.PENDING or not self.booked_until:
             return False
-        return datetime.now() > self.booked_until
+        # Используем timezone-aware время, чтобы не сравнивать naive и aware datetime
+        return datetime.now(timezone.utc) > self.booked_until

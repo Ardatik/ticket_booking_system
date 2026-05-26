@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import Integer, String, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -35,7 +35,7 @@ class Hall(Base):
     __tablename__ = "halls"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    venue_id: Mapped[int] = mapped_column(nullable=False)
+    venue_id: Mapped[int] = mapped_column(ForeignKey("venues.id"), nullable=False)
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)  # "Зал 1", "VIP зал"
     capacity: Mapped[int] = mapped_column(Integer, nullable=False)

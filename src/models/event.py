@@ -39,7 +39,7 @@ class Event(Base, TimestampMixin):
     end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     # Место проведения
-    hall_id: Mapped[int] = mapped_column(nullable=False)
+    hall_id: Mapped[int] = mapped_column(ForeignKey("halls.id"), nullable=False)
 
     # Цена базовая (для разных типов мест может быть множитель)
     base_price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
